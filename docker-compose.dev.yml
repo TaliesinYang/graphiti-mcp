@@ -1,0 +1,80 @@
+version: '3.8'
+
+# Development override configuration
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  neo4j:
+    environment:
+      # Reduced memory for development
+      - NEO4J_server_memory_heap_initial__size=256m
+      - NEO4J_server_memory_heap_max__size=512m
+      - NEO4J_server_memory_pagecache_size=256m
+      # Enable development features
+      - NEO4J_dbms_logs_debug_level=INFO
+    volumes:
+      # Mount source for development
+      - ./scripts:/scripts:rw
+    labels:
+      # More frequent backups for development testing
+      - "ofelia.job-exec.neo4j-backup.schedule=*/30 * * * *"  # Every 30 minutes
+
+  graphiti-mcp:
+    build:
+      context: ./mcp-server
+      dockerfile: Dockerfile.dev  # Development dockerfile
+    environment:
+      # Development settings
+      - DEBUG=true
+      - LOG_LEVEL=DEBUG
+      - MCP_GROUP_ID=dev-testing
+    volumes:
+      # Mount source code for live development
+      - ./mcp-server:/app:rw
+      - ./logs:/app/logs:rw
+    ports:
+      - "8000:8000"  # Keep same port
+      - "8001:8001"  # Additional debug port
+    command: ["uv", "run", "--reload", "graphiti_mcp_server.py", "--transport", "sse", "--host", "0.0.0.0", "--port", "8000"]
+
+  ofelia:
+    volumes:
+      # Make scripts writable for development
+      - ./scripts:/scripts:rw
+    environment:
+      - OFELIA_LOG_LEVEL=DEBUG
+    labels:
+      # Development monitoring (every 5 minutes)
+      - "ofelia.job-local.ofelia-health.schedule=*/5 * * * *"
+
+  # Development database browser
+  neo4j-browser:
+    image: neo4j:5.26.2
+    container_name: graphiti-neo4j-browser-dev
+    profiles:
+      - dev-tools
+    depends_on:
+      - neo4j
+    ports:
+      - "7475:7474"  # Alternative port for browser
+    environment:
+      - NEO4J_AUTH=${NEO4J_USER:-neo4j}/${NEO4J_PASSWORD:-password123}
+    command: ["neo4j", "console"]
+    networks:
+      - graphiti-network
+
+  # Development log viewer
+  log-viewer:
+    image: amir20/dozzle:latest
+    container_name: graphiti-logs-dev
+    profiles:
+      - dev-tools
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - DOZZLE_LEVEL=trace
+      - DOZZLE_TAILSIZE=300
+    networks:
+      - graphiti-network

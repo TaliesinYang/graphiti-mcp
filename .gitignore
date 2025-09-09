@@ -1,0 +1,144 @@
+# Environment Configuration
+.env
+.env.local
+.env.backup
+*.env
+
+# Backup Files
+backups/*.dump
+backups/*.log
+
+# Log Files
+logs/*.log
+logs/**/*.log
+
+# Docker Data
+docker-volumes/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv/
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+
+# Docker
+.docker/
+.dockerignore
+
+# Git
+.git/
+*.orig
+
+# Node.js (if any)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test Coverage
+coverage/
+*.cover
+.coverage
+.coverage.*
+
+# Documentation Build
+docs/_build/
+site/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# Local Configuration
+config/local.*
+config/*.local.*
+
+# SSL Certificates
+*.pem
+*.key
+*.crt
+*.csr
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+
+# Compiled Languages
+*.o
+*.a
+*.lib
+*.dll
+*.exe
+*.out
+
+# Archives
+*.zip
+*.tar.gz
+*.tar.bz2
+*.rar
+*.7z
+
+# Keep Important Files
+!.env.example
+!.gitkeep
+!README.md
+!LICENSE
+!docs/
+!config/mcp.json.template
+!scripts/
+!mcp-server/
+
+# Backup Directory Structure (keep directory but ignore contents)
+backups/
+!backups/.gitkeep
+
+# Logs Directory Structure
+logs/
+!logs/.gitkeep
